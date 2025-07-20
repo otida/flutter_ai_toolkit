@@ -39,7 +39,7 @@ class UserMessageView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
             child: Align(
-              alignment: Alignment.topRight,
+              alignment: AlignmentDirectional.topEnd,
               child: SizedBox(
                 height: 80,
                 width: 200,
@@ -57,7 +57,7 @@ class UserMessageView extends StatelessWidget {
           );
 
           return Align(
-            alignment: Alignment.topRight,
+            alignment: AlignmentDirectional.topEnd,
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: HoveringButtons(

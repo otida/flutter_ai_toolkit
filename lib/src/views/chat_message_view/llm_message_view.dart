@@ -20,8 +20,7 @@ class LlmMessageView extends StatelessWidget {
   ///
   /// The [message] parameter is required and represents the LLM chat message to
   /// be displayed.
-  const LlmMessageView(
-    this.message, {
+  const LlmMessageView(this.message, {
     this.isWelcomeMessage = false,
     super.key,
   });
@@ -33,78 +32,70 @@ class LlmMessageView extends StatelessWidget {
   final bool isWelcomeMessage;
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Flexible(
-        flex: 6,
-        child: Column(
-          children: [
-            ChatViewModelClient(
-              builder: (context, viewModel, child) {
-                final text = message.text;
-                final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
-                final llmStyle = LlmMessageStyle.resolve(
-                  chatStyle.llmMessageStyle,
-                );
+  Widget build(BuildContext context) =>
+      ChatViewModelClient(
+        builder: (context, viewModel, child) {
+          final text = message.text;
+          final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
+          final llmStyle = LlmMessageStyle.resolve(
+            chatStyle.llmMessageStyle,
+          );
 
-                return Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: llmStyle.iconDecoration,
-                        child: Icon(
-                          llmStyle.icon,
-                          color: llmStyle.iconColor,
-                          size: 12,
-                        ),
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: llmStyle.iconDecoration,
+                  child: Icon(
+                    llmStyle.icon,
+                    color: llmStyle.iconColor,
+                    size: 12,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: HoveringButtons(
+                  isUserMessage: false,
+                  chatStyle: chatStyle,
+                  clipboardText: text,
+                  child: Container(
+                    decoration: llmStyle.decoration,
+                    margin: const EdgeInsetsDirectional.only(start: 4),
+                    padding: const EdgeInsets.all(8),
+                    child:
+                    text == null
+                        ? SizedBox(
+                      width: 32,
+                      child: JumpingDotsProgressIndicator(
+                        fontSize: 24,
+                        color: chatStyle.progressIndicatorColor!,
                       ),
-                    ),
-                    HoveringButtons(
-                      isUserMessage: false,
-                      chatStyle: chatStyle,
+                    )
+                        : AdaptiveCopyText(
                       clipboardText: text,
-                      child: Container(
-                        decoration: llmStyle.decoration,
-                        margin: const EdgeInsets.only(left: 28),
-                        padding: const EdgeInsets.all(8),
-                        child:
-                            text == null
-                                ? SizedBox(
-                                  width: 32,
-                                  child: JumpingDotsProgressIndicator(
-                                    fontSize: 24,
-                                    color: chatStyle.progressIndicatorColor!,
-                                  ),
-                                )
-                                : AdaptiveCopyText(
-                                  clipboardText: text,
-                                  chatStyle: chatStyle,
-                                  child:
-                                      isWelcomeMessage ||
-                                              viewModel.responseBuilder == null
-                                          ? MarkdownBody(
-                                            data: text,
-                                            selectable: false,
-                                            styleSheet: llmStyle.markdownStyle,
-                                          )
-                                          : viewModel.responseBuilder!(
-                                            context,
-                                            text,
-                                          ),
-                                ),
+                      chatStyle: chatStyle,
+                      child:
+                      isWelcomeMessage ||
+                          viewModel.responseBuilder == null
+                          ? MarkdownBody(
+                        data: text,
+                        selectable: false,
+                        styleSheet: llmStyle.markdownStyle,
+                      )
+                          : viewModel.responseBuilder!(
+                        context,
+                        text,
                       ),
                     ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      const Flexible(flex: 2, child: SizedBox()),
-    ],
-  );
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
 }
